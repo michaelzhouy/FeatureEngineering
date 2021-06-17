@@ -8,7 +8,7 @@ import gc
 df = pd.DataFrame()
 
 # rolling时间窗口
-df.groupby(df['id_road'])['TTI'].rolling('60min', closed='left', min_periods=6).mean()
+df.groupby('id_road')['TTI'].rolling('60min', closed='left', min_periods=6).mean()
 df.sort_values(by='date', inplace=True)
 # using center=false to assign values on window's last row
 df['val_rolling_7_mean'] = df.groupby('group_key')['val'].transform(lambda x: x.rolling(7, center=False).mean())
