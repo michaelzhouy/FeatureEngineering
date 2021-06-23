@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/6/16 6:34 下午
 # @Author  : Michael Zhouy
-# -*- coding: utf-8 -*-
-# @Time     : 2020/11/22 20:15
-# @Author   : Michael_Zhouy
 import pandas as pd
 import joblib
 
