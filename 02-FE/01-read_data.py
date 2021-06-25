@@ -20,6 +20,9 @@ df.to_hdf('data.h5', 'df')
 # 读取h5文件
 pd.read_hdf('data.h5')
 
+df.to_feather('data.feather')
+df = pd.read_feather('data.feather')
+
 
 # 节省内存读文件
 def reduce_mem_usage(df):
