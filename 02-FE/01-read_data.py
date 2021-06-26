@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import os
 import gc
+import time
 
 
 # 读取压缩文件
@@ -22,6 +23,8 @@ pd.read_hdf('data.h5')
 
 df.to_feather('data.feather')
 df = pd.read_feather('data.feather')
+
+df[['sid', 'label']].to_csv('../sub/sub_{}_1.csv'.format(time.strftime('%Y%m%d')), index=False)
 
 
 # 节省内存读文件
