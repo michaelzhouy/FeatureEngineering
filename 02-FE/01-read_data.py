@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import gc
 import time
+import shutil
 
 
 # 读取压缩文件
@@ -14,7 +15,6 @@ df = pd.read_csv('../input/file.txt.gz', compression='gzip', header=0, sep=',', 
 # 分块读取数据
 reader = pd.read_csv('../input/train.csv', iterator=True)
 df = reader.get_chunk(10000)
-df.head()
 
 # 数据存储为h5格式
 df.to_hdf('data.h5', 'df')
@@ -86,10 +86,17 @@ def read_data(path):
 def time_split(df):
     """
     根据时间划分训练集、验证集和测试集
-    @param df:
-    @return:
+    :param df:
+    :return:
     """
     train = df.loc[df['observe_date'] < '2019-11-04', :]
     valid = df.loc[(df['observe_date'] >= '2019-11-04') & (df['observe_date'] <= '2019-12-04'), :]
     test = df.loc[df['observe_date'] > '2020-01-04', :]
     return train, valid, test
+
+
+def copy_file(files, path1, path2):
+    for file in files:
+        src = path1 + file
+        dst = path2 + file
+        shutil.copyfile(src, dst)
