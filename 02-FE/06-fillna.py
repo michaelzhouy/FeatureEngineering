@@ -23,9 +23,9 @@ df = df.fillna(df.mode().iloc[0, :])
 def fillna_median(train, test):
     """
     用每列中位数填充缺失值
-    @param train:
-    @param test:
-    @return:
+    :param train:
+    :param test:
+    :return:
     """
     imputer = SimpleImputer(missing_values=np.nan, strategy='median')
     imputer = imputer.fit(train)

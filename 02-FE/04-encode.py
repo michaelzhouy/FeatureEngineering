@@ -90,11 +90,11 @@ def train_test_label_encode(df, cat_col, type='save', path='./'):
         d = train_test_label_encode(test, i, 'load', '../train_code/')
         test[i] = test[i].map(d)
         test[i] = test[i].astype('category')
-    @param df:
-    @param cat_col:
-    @param type: 'save' 'load'
-    @param path:
-    @return:
+    :param df:
+    :param cat_col:
+    :param type:
+    :param path:
+    :return:
     """
     def save_obj(obj, name):
         with open(name + '.pkl', 'wb') as f:
@@ -127,11 +127,11 @@ def train_test_label_encode_2(df, cat_col, type='save', path='./'):
         d = train_test_label_encode_2(test, i, 'load', '../train_code/')
         test[i] = test[i].map(d)
         test[i] = test[i].astype('category')
-    @param df:
-    @param cat_col:
-    @param type: 'save' 'load'
-    @param path:
-    @return:
+    :param df:
+    :param cat_col:
+    :param type: 'save' 'load'
+    :param path:
+    :return:
     """
     if type == 'save':
         print(cat_col)

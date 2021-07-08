@@ -85,7 +85,7 @@ def read_data(path):
 
 def time_split(df):
     """
-    根据时间划分训练集、验证集和测试集
+    根据时间划分训练集, 验证集, 测试集
     :param df:
     :return:
     """
@@ -96,6 +96,13 @@ def time_split(df):
 
 
 def copy_file(files, path1, path2):
+    """
+    copy文件
+    :param files:
+    :param path1:
+    :param path2:
+    :return:
+    """
     for file in files:
         src = path1 + file
         dst = path2 + file

@@ -5,22 +5,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import gc
-# 过滤警告
-import warnings
-warnings.filterwarnings('ignore')
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
-
-# DataFrame显示所有列
-pd.set_option('max_columns', None)
-pd.set_option('max_rows', None)
-
 
 df = pd.DataFrame()
-
-# 筛选object特征
-df_object = df.select_dtypes(include=['object'])
-df_numerical = df.select_dtypes(exclude=['object'])
 
 # 分组排名
 df.groupby('uid')['time'].rank('dense')
