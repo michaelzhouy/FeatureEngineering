@@ -4,8 +4,8 @@
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
-from sklearn.model_selection import KFold, StratifiedKFold
-from sklearn.metrics import f1_score, roc_curve, precision_recall_curve
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import f1_score, roc_curve
 import gc
 
 
