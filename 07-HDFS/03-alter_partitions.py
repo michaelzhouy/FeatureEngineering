@@ -31,7 +31,7 @@ def get_partitions(hdfs_dir):
     return partitions
 
 
-def alter_partitions(partitions):
+def alter_partitions(partitions, table):
     conn = dbapi.connect(
         host='10.21.3.22',
         port=10000,
@@ -43,14 +43,15 @@ def alter_partitions(partitions):
     # alter table x_direction
     # add partition (dt_part='2021-07-15', area_part='1', y_part='2139')
     for partition in partitions:
-        sql = """alter table x_direction add partition ({})""".format(partition)
+        sql = """alter table {} add partition ({})""".format(table, partition)
         try:
             cursor.execute(sql)
         except:
             print(sql)
 
 
-hdfs_dir = '/user/hive/warehouse/writing_height.db/x_direction/'
+table = 'x_direction'
+hdfs_dir = '/user/hive/warehouse/writing_height.db/{}/'.format(table)
 
 partitions = get_partitions(hdfs_dir)
-alter_partitions(partitions)
+alter_partitions(partitions, table)
