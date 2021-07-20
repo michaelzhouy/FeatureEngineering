@@ -101,7 +101,7 @@ def lgb_model(X_train, y_train, X_valid=None, y_valid=None, valid_model_path='./
         valid_model.save_model(valid_model_path + 'lgb.txt')
     else:
         # 加载模型
-        valid_model = lgb.Booster(valid_model_path + 'lgb.txt')
+        valid_model = lgb.Booster(model_file=valid_model_path + 'lgb.txt')
         train_model = lgb.train(
             params,
             train_dataset,
