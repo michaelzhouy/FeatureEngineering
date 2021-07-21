@@ -20,3 +20,6 @@
 *.txt
 *.7z
 *.tmp
+*.DS_Store
+*.rar
+*.jpg
