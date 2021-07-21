@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/7/8 3:33 下午
 # @Author  : Michael Zhouy
+# !pip freeze > requirements.txt
 # 过滤警告
 import warnings
 warnings.filterwarnings('ignore')
