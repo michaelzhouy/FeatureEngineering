@@ -2,7 +2,8 @@
 # @Time    : 2021/6/16 6:23 下午
 # @Author  : Michael Zhouy
 import pandas as pd
-import datetime
+from datetime import datetime
+import time
 import matplotlib.pyplot as plt
 
 
@@ -68,13 +69,21 @@ def timestamp2string(timeStamp):
     :return:
     """
     try:
-        d = datetime.datetime.fromtimestamp(timeStamp)
+        d = datetime.fromtimestamp(timeStamp)
+        # utc timestamp
+        # d = datetime.utcfromtimestamp(timeStamp)
         # str类型
         str = d.strftime('%Y-%m-%d %H:%M:%S.%f')
         return str
     except Exception as e:
         print(e)
         return ''
+
+
+def timestamp_to_date(timestamp):
+    timeArray = time.localtime(int(timestamp))
+    otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    return otherStyleTime
 
 
 def get_datetime(df, time_col, type='hour'):
