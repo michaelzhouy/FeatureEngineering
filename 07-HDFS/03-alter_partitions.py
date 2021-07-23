@@ -10,7 +10,7 @@ from impala import dbapi
 
 
 def get_partitions(hdfs_dir):
-    client = pyhdfs.HdfsClient(hosts='10.21.3.10,9000', user_name='hadoop')
+    client = pyhdfs.HdfsClient(hosts='xx.xx.x.xx,9000', user_name='hadoop')
     dirs, partitions = [], []
     if client.exists(hdfs_dir):
         for file1 in client.listdir(hdfs_dir):

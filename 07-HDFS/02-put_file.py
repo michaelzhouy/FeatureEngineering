@@ -4,7 +4,7 @@
 import pyhdfs
 
 
-def get_hdfs_client(host='10.21.3.10', port=9000, username='hadoop'):
+def get_hdfs_client(host='xx.xx.x.xx', port=9000, username='hadoop'):
     """hdfs客户端"""
     try:
         return pyhdfs.HdfsClient(hosts=f'{host},{port}', user_name=f'{username}')

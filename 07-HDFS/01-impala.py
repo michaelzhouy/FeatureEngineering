@@ -5,7 +5,7 @@ from impala import dbapi
 from impala.util import as_pandas
 
 conn = dbapi.connect(
-    host='10.21.3.22',
+    host='xx.xx.x.xx',
     port=10000,
     auth_mechanism='PLAIN',
     database='default'
