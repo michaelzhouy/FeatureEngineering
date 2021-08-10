@@ -29,8 +29,8 @@ params = {
     'gpu_id': 7,
     'random_state': 2021
 }
-
-folds = KFold(n_splits=5, shuffle=True, random_state=2021)
+n_splits = 5
+folds = KFold(n_splits=n_splits, shuffle=True, random_state=2021)
 
 X = train[features]
 y = train['label']
@@ -40,16 +40,21 @@ MSEs = []
 
 
 def train():
-    X_test_da = da.from_array(X_test.values, chunks=(1000, len(features)))
+    # 将DataFrame转为da, chunks参数, 第1个为行数, 第2个为特征个数
+    X_test_da = da.from_array(X_test, chunks=(1000, len(features)))
+    # y_test的chunks参数, 第1个需要与X_test的第1个相等, 第2个不传
     y_test_da = da.from_array(y_test, chunks=(1000,))
+    # 类似xgb.DMatrix()
     dtest = DaskDMatrix(client, X_test_da, y_test_da)
 
+    # 交叉验证
     for fold_n, (train_index, valid_index) in enumerate(folds.split(X)):
         start_time = time.time()
         print('Training on fold {}'.format(fold_n + 1))
         X_train, y_train = X.iloc[train_index], y.iloc[train_index]
         X_valid, y_valid = X.iloc[valid_index], y.iloc[valid_index]
 
+        # 同上
         X_train_da = da.from_array(X_train, chunks=(1000, len(features)))
         X_valid_da = da.from_array(X_valid, chunks=(1000, len(features)))
         y_train_da = da.from_array(y_train, chunks=(1000,))
@@ -60,6 +65,7 @@ def train():
 
         evals = [(dtrain, 'train'), (dvalid, 'valid')]
 
+        # 与CPU, 单GPU不同, 需xgb.dask.train(), 其他相同
         model = xgb.dask.train(
             client,
             params,
@@ -73,6 +79,7 @@ def train():
         bst = model['booster']
         history = model['history']
 
+        # 与CPU, 单GPU不同, 需xgb.dask.predict(), 并且需要传入client, bst, 其他相同
         valid_pred = xgb.dask.predict(client, bst, dvalid)
         mse_ = mean_squared_error(y_valid, valid_pred)
         print('MSE: {}'.format(mse_))
@@ -81,13 +88,16 @@ def train():
         # print('Evaluation history:', history)
 
         if fold_n == 0:
-            result = xgb.dask.predict(client, bst, dtest) / 5
+            result = xgb.dask.predict(client, bst, dtest) / n_splits
         else:
-            result += xgb.dask.predict(client, bst, dtest) / 5
+            result += xgb.dask.predict(client, bst, dtest) / n_splits
 
     return result
 
 
+# n_workers参数为使用多少个GPU
+# threads_per_worker参数为每个GPU配置都是线程
+# CUDA_VISIBLE_DEVICES参数为指定使用哪几个GPU
 with LocalCUDACluster(n_workers=2, threads_per_worker=2, CUDA_VISIBLE_DEVICES='2, 3') as cluster:
     with Client(cluster) as client:
         result = train()
