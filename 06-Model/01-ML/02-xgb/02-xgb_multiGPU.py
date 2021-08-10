@@ -89,7 +89,6 @@ def train():
     return result
 
 
-if __name__ == "__main__":
-    with LocalCUDACluster(n_workers=1, threads_per_worker=3, CUDA_VISIBLE_DEVICES='2,3') as cluster:
-        with Client(cluster) as client:
-            result = train()
+with LocalCUDACluster(n_workers=2, threads_per_worker=2, CUDA_VISIBLE_DEVICES='2,3') as cluster:
+    with Client(cluster) as client:
+        result = train()
