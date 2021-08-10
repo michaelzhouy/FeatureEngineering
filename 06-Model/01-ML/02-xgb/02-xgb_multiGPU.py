@@ -16,7 +16,6 @@ train = pd.DataFrame()
 test = pd.DataFrame()
 features = []
 
-
 params = {
     'eta': 0.05,
     'max_depth': 15,
