@@ -4,21 +4,25 @@
 from catboost import CatBoostRegressor
 
 
-def train(x_train, y_train, x_valid, y_valid, test, cat_cols, iterations=22000, depth=10):
+def cat_train(x_train, y_train, x_valid, y_valid, cat_cols):
     model = CatBoostRegressor(
-        iterations=iterations,
+        iterations=4000,
         learning_rate=0.03,
-        depth=depth,
+        depth=10,
         l2_leaf_reg=3,
-        loss_function='MAE',
-        eval_metric='MAE',
-        random_seed=2200,
-        task_type="GPU"
+        loss_function='RMSE',
+        eval_metric='RMSE',
+        task_type='GPU',
+        devices='1,2,3',
+        random_seed=2021
     )
-    model.fit(x_train, y_train, eval_set=(x_valid, y_valid),
-              early_stopping_rounds=500,
-              verbose=500,
-              cat_features=cat_cols)
+    model.fit(
+        x_train, y_train,
+        eval_set=(x_valid, y_valid),
+        early_stopping_rounds=150,
+        verbose=200,
+        cat_features=cat_cols
+    )
 
-    result = model.predict(test)
-    return result
+    valid_preds = model.predict(x_valid)
+    return valid_preds
