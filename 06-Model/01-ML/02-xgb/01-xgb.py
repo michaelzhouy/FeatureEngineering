@@ -11,9 +11,6 @@ import xgboost as xgb
 from xgboost import plot_importance
 
 
-
-
-
 def xgb_plot_imp(model):
     plot_importance(model)
     plt.show()
