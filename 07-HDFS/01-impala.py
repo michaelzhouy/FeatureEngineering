@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/7/15 8:12 下午
 # @Author  : Michael Zhouy
+import pandas as pd
 from impala import dbapi
 from impala.util import as_pandas
 
-conn = dbapi.connect(
-    host='xx.xx.x.xx',
-    port=10000,
-    auth_mechanism='PLAIN',
-    database='default'
-)
-cursor = conn.cursor()
-cursor.execute('select * from isc.replace_group_quantity_pred')
-data = as_pandas(cursor)
+
+def hdfs2df(sql, host, port, database):
+    conn = dbapi.connect(
+        host=host,
+        port=port,
+        auth_mechanism='PLAIN',
+        database=database
+    )
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    data = as_pandas(cursor)
+    return data
+
+
+def hdfs(sql, host, port, database):
+    conn = dbapi.connect(
+        host=host,
+        port=port,
+        auth_mechanism='PLAIN',
+        database=database
+    )
+    df = pd.read_sql(sql, conn)
+    return df
