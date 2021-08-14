@@ -2,6 +2,7 @@
 # Time   : 2021/6/26 19:35
 # Author : Michael_Zhouy
 from catboost import CatBoostRegressor
+import matplotlib.pyplot as plt
 
 
 def cat_train(x_train, y_train, x_valid, y_valid, cat_cols):
@@ -27,3 +28,11 @@ def cat_train(x_train, y_train, x_valid, y_valid, cat_cols):
 
     valid_preds = model.predict(x_valid)
     return valid_preds
+
+
+def cat_plot_imp(model):
+    feat_imp = model.feature_importances_
+    feat_name = model.feature_names_
+    plt.figure(figsize=(10, 10))
+    plt.barh(feat_name, feat_imp, height=0.5)
+    plt.show()
