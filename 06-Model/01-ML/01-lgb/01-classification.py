@@ -45,16 +45,16 @@ def f1_score_eval(preds, valid_df):
     return 'macro_f1_score', scores, True
 
 
-def plot_imp(train_model):
-    importance = train_model.feature_importance(importance_type='gain')
-    feature_name = train_model.feature_name()
-    df_importance = pd.DataFrame({
-        'feature_name': feature_name,
-        'importance': importance
-    }).sort_values(by='importance', ascending=False)
-    df_importance['normalized_importance'] = df_importance['importance'] / df_importance['importance'].sum()
-    df_importance['cumulative_importance'] = np.cumsum(df_importance['normalized_importance'])
-    return df_importance
+def lgb_imp(train_model):
+    imp = train_model.feature_importance(importance_type='gain')
+    feats = train_model.feature_name()
+    df_imp = pd.DataFrame({
+        'feats': feats,
+        'imp': imp
+    }).sort_values(by='imp', ascending=False)
+    df_imp['norm_imp'] = df_imp['imp'] / df_imp['imp'].sum()
+    df_imp['cum_imp'] = np.cumsum(df_imp['norm_imp'])
+    return df_imp
 
 
 def lgb_model(X_train, y_train, X_valid=None, y_valid=None, valid_model_path='./'):
@@ -108,7 +108,7 @@ def lgb_model(X_train, y_train, X_valid=None, y_valid=None, valid_model_path='./
             num_boost_round=valid_model.best_iteration+20
         )
         # 导出特征重要性
-        df_importance = plot_imp(train_model)
+        df_importance = lgb_imp(train_model)
         record_low_importance = df_importance[df_importance['cumulative_importance'] > 0.99]
         to_drop = list(record_low_importance['feature_name'])
         print(to_drop)
