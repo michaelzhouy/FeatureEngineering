@@ -20,23 +20,24 @@ def cat_train(x_train, y_train, x_valid, y_valid, cat_cols):
         'random_seed': 2021
     }
     model = CatBoostRegressor(**params)
+    train_data = Pool(x_train, y_train, cat_features=cat_cols)
+    valid_data = Pool(x_valid, y_valid, cat_features=cat_cols)
     model.fit(
-        x_train, y_train,
-        eval_set=(x_valid, y_valid),
+        train_data,
+        eval_set=valid_data,
         early_stopping_rounds=150,
-        verbose=200,
-        cat_features=cat_cols
+        verbose=200
     )
 
     valid_preds = model.predict(x_valid)
     return valid_preds
 
 
-def cat_imp(model, X, y):
+def cat_imp(model, valid_data):
     df_imp = pd.DataFrame()
     df_imp['feats'] = model.feature_names_
     # model.feature_importances_
-    df_imp['imp'] = model.get_feature_importance(Pool(X, y), type='LossFunctionChange')
+    df_imp['imp'] = model.get_feature_importance(valid_data, type='LossFunctionChange')
     df_imp.sort_values('imp', ascending=False, inplace=True)
     df_imp['norm_imp'] = df_imp['imp'] / df_imp['imp'].sum()
     df_imp['cum_imp'] = np.cumsum(df_imp['norm_imp'])
