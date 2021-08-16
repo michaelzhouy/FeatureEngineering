@@ -1,8 +1,10 @@
 # -*- coding:utf-8 -*-
 # Time   : 2021/6/26 19:35
 # Author : Michael_Zhouy
+import numpy as np
+import pandas as pd
 from catboost import CatBoostRegressor
-import matplotlib.pyplot as plt
+from catboost import Pool
 
 
 def cat_train(x_train, y_train, x_valid, y_valid, cat_cols):
@@ -30,9 +32,12 @@ def cat_train(x_train, y_train, x_valid, y_valid, cat_cols):
     return valid_preds
 
 
-def cat_plot_imp(model):
-    feat_imp = model.feature_importances_
-    feat_name = model.feature_names_
-    plt.figure(figsize=(10, 10))
-    plt.barh(feat_name, feat_imp, height=0.5)
-    plt.show()
+def cat_imp(model, X, y):
+    df_imp = pd.DataFrame()
+    df_imp['feats'] = model.feature_names_
+    # model.feature_importances_
+    df_imp['imp'] = model.get_feature_importance(Pool(X, y), type='LossFunctionChange')
+    df_imp.sort_values('imp', ascending=False, inplace=True)
+    df_imp['norm_imp'] = df_imp['imp'] / df_imp['imp'].sum()
+    df_imp['cum_imp'] = np.cumsum(df_imp['norm_imp'])
+    return df_imp
