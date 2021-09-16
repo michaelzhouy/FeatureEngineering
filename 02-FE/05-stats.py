@@ -194,3 +194,15 @@ for i in range(1, 4):
     del tmp_df['rank']
     tmp_df.columns = ['ID', 'rank{}_mode_lat'.format(i), 'rank{}_mode_lon'.format(i), 'rank{}_mode_cnt'.format(i)]
     group_df = group_df.merge(tmp_df, on='ID', how='left')
+
+
+def fe_stat(df):
+    for c1 in tqdm(['author', 'level1', 'level2', 'level3', 'level4', 'brand', 'mall','author_brand','author_brand_mall', 'author_l1', 'author_l1-2','author_l1-3', 'author_l1-4', 'author_mall','url', 'baike_id_1h','baike_id_2h','date','week']):
+        tr0 = df.groupby(c1)[['orders_2h','orders_1h','price','price_diff','orders_21_diff', 'orders_21_rate']].agg(['count','nunique','sum','mean','median','max','min','std'])
+        tr0.columns = [f'{x}_gp_{c1}_{y}_0810' for x,y in tr0.columns]
+        df = pd.merge(df,tr0,left_on=c1,right_index=True,how='left')
+        if c1 not in ['date','week']:
+            tr0 = df.groupby([c1,'date'])[['orders_2h','orders_1h','price','price_diff','orders_21_diff', 'orders_21_rate']].agg(['count','nunique','sum','mean','median','max','min','std'])
+            tr0.columns = [f'{x}_gp_{c1}date_{y}_0810' for x,y in tr0.columns]
+            df = pd.merge(df,tr0,left_on=[c1,'date'],right_index=True,how='left')
+    return df
