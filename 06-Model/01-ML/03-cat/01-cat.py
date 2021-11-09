@@ -80,4 +80,4 @@ def cat_cv(X_train, y_train, X_test, cat_cols):
 
         train_pre[val_idx] = cbt_model.predict_proba(X_val)[:, 1]
         test_predictions += cbt_model.predict_proba(X_test)[:, 1] / folds.n_splits
-        return test_predictions
+    return test_predictions
