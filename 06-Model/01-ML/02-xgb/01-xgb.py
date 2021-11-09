@@ -3,9 +3,10 @@
 # @Author  : Michael Zhouy
 import time
 import datetime
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.metrics import mean_squared_error
 import xgboost as xgb
 from xgboost import plot_importance
@@ -140,3 +141,47 @@ def xgb_sklearn_cross_valid(train, test, features):
             result += model.predict(test[features]) / 5
 
     return result
+
+
+def xgb_cv(X_train, y_train, X_test):
+    params = {
+        'eta': 0.1,
+        'max_depth': 15,
+        'subsample': 0.6,
+        'eval_metric': 'auc',
+        'reg_alpha': 10,
+        'reg_lambda': 30,
+        'nthread': 30,
+        'min_child_weight': 17,
+        'tree_method': 'gpu_hist',
+        'gpu_id': 1,
+        'random_state': 2021
+    }
+
+    folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=2021)
+    train_pre = np.zeros(len(X_train))
+    test_predictions = np.zeros(len(X_test))
+
+    for fold_, (trn_idx, val_idx) in enumerate(folds.split(X_train, y_train)):
+        print("fold n{}".format(fold_ + 1))
+
+        X_tra, X_val = X_train.iloc[trn_idx], X_train.iloc[val_idx]
+        y_tra, y_val = y_train.iloc[trn_idx], y_train.iloc[val_idx]
+
+        dtrain = xgb.DMatrix(X_tra, y_tra)
+        dvalid = xgb.DMatrix(X_val, y_val)
+        dtest = xgb.DMatrix(X_test)
+        evals = [(dtrain, 'train'), (dvalid, 'eval')]
+
+        xgb_model = xgb.train(
+            params,
+            dtrain,
+            num_boost_round=100000,
+            evals=evals,
+            early_stopping_rounds=100,
+            verbose_eval=50
+        )
+
+        train_pre[val_idx] = xgb_model.predict(dvalid)
+        test_predictions += xgb_model.predict(dtest) / folds.n_splits
+    return test_predictions
