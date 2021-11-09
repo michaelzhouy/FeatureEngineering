@@ -161,6 +161,7 @@ def xgb_cv(X_train, y_train, X_test):
     folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=2021)
     train_pre = np.zeros(len(X_train))
     test_predictions = np.zeros(len(X_test))
+    aucs = []
 
     for fold_, (trn_idx, val_idx) in enumerate(folds.split(X_train, y_train)):
         print("fold n{}".format(fold_ + 1))
@@ -181,6 +182,8 @@ def xgb_cv(X_train, y_train, X_test):
             early_stopping_rounds=100,
             verbose_eval=50
         )
+        print('best score: ', xgb_model.best_score)
+        aucs.append(xgb_model.best_score)
 
         train_pre[val_idx] = xgb_model.predict(dvalid)
         test_predictions += xgb_model.predict(dtest) / folds.n_splits

@@ -60,6 +60,7 @@ def cat_cv(X_train, y_train, X_test, cat_cols):
     folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=2021)
     train_pre = np.zeros(len(X_train))
     test_predictions = np.zeros(len(X_test))
+    aucs = []
 
     for fold_, (trn_idx, val_idx) in enumerate(folds.split(X_train, y_train)):
         print("fold n{}".format(fold_ + 1))
@@ -70,14 +71,15 @@ def cat_cv(X_train, y_train, X_test, cat_cols):
         tra_data = Pool(X_tra, y_tra, cat_features=cat_cols)
         val_data = Pool(X_val, y_val, cat_features=cat_cols)
 
-        cbt_model = CatBoostClassifier(**params)
-        cbt_model.fit(
+        cat_model = CatBoostClassifier(**params)
+        cat_model.fit(
             tra_data,
             eval_set=val_data,
             early_stopping_rounds=150,
             verbose=50
         )
+        aucs.append(cat_model.get_best_score()['validation']['AUC'])
 
-        train_pre[val_idx] = cbt_model.predict_proba(X_val)[:, 1]
-        test_predictions += cbt_model.predict_proba(X_test)[:, 1] / folds.n_splits
+        train_pre[val_idx] = cat_model.predict_proba(X_val)[:, 1]
+        test_predictions += cat_model.predict_proba(X_test)[:, 1] / folds.n_splits
     return test_predictions
