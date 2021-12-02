@@ -3,9 +3,17 @@
 # @Author  : Michael Zhouy
 import numpy as np
 import pandas as pd
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import gc
 
 df = pd.DataFrame()
+
+# 时间转换
+date = '2021-12-01'
+last_months = datetime.strptime(date, '%Y-%m-%d') + relativedelta(months=-1)
+last_months = datetime.strftime(last_months, '%Y-%m-%d')
+print(last_months)
 
 # rolling时间窗口
 df.groupby('id_road')['TTI'].rolling('60min', closed='left', min_periods=6).mean()
