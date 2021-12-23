@@ -23,6 +23,7 @@ def func(name, g):
 
 gp = df.groupby(['key2'])
 result = Parallel(n_jobs=10)(delayed(func)(name, g) for name, g in tqdm(gp))
+result = Parallel(backend='multiprocessing', n_jobs=10)(delayed(func)(name, g) for name, g in tqdm(gp))
 
 dic = pd.concat(result)
 df['nunique'] = df['key2'].map(dic)
