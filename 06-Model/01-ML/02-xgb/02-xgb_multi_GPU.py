@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/8/9 7:35 下午
 # @Author  : Michael Zhouy
+"""
+1. Xgboost与CPU版本没有区别, 只是multi GPU需要用到dask和dask_cuda两个包
+pip install dask
+pip install dask_cuda
+2. 坑: 遇到 ImportError: cannot import name 'dumps_msgpack' from 'distributed.protocol.core' , 版本有问题, 需指定安装版本, 命令: pip install dask==2021.4.1, 即可解决以下报错(我已解决, 之前的报错忘记截图了)
+       pip install dask==2021.4.1
+"""
 import time
 import datetime
 import pandas as pd
